@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Hub - Home</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="header-title">Movie Hub</div>
+      <!-- Search Icon -->
+      <div class="search-icon" id="searchIcon">
+        <!-- Inline SVG for magnifying glass -->
+        <svg viewBox="0 0 24 24">
+          <path d="M21.71 20.29l-3.4-3.4a8.49 8.49 0 001.89-5.39 8.5 8.5 0 10-8.5 8.5 8.49 8.49 0 005.39-1.89l3.4 3.4a1 1 0 001.42-1.42zM10.5 17a6.5 6.5 0 116.5-6.5 6.51 6.51 0 01-6.5 6.5z"></path>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top Slideshow (Hindi Movies) -->
+  <div class="top-slideshow">
+    <div class="slides-container" id="slidesContainer"></div>
+  </div>
+  <!-- Show the name of the currently visible movie below the rectangular box -->
+  <div class="top-movie-title" id="topMovieTitle"></div>
+
+  <!-- Sections stacked vertically, each horizontally scrollable -->
+  <section class="section">
+    <h2>Recommended Movies</h2>
+    <div class="movie-carousel" id="recommended-carousel"></div>
+  </section>
+
+  <section class="section">
+    <h2>Popular in Action</h2>
+    <div class="movie-carousel" id="action-carousel"></div>
+  </section>
+
+  <section class="section">
+    <h2>New Releases</h2>
+    <div class="movie-carousel" id="new-carousel"></div>
+  </section>
+
+  <section class="section">
+    <h2>Bollywood (Hindi)</h2>
+    <div class="movie-carousel" id="bollywood-carousel"></div>
+  </section>
+
+  <section class="section">
+    <h2>Hollywood (English)</h2>
+    <div class="movie-carousel" id="hollywood-carousel"></div>
+  </section>
+
+  <section class="section">
+    <h2>South (Telugu)</h2>
+    <div class="movie-carousel" id="south-carousel"></div>
+  </section>
+
+  <section class="section">
+    <h2>Punjabi</h2>
+    <div class="movie-carousel" id="punjabi-carousel"></div>
+  </section>
+
+  <section class="section">
+    <h2>Anime (Japanese)</h2>
+    <div class="movie-carousel" id="anime-carousel"></div>
+  </section>
+
+  <section class="section">
+    <h2>K-Drama (Korean)</h2>
+    <div class="movie-carousel" id="kdrama-carousel"></div>
+  </section>
+
+  <section class="section">
+    <h2>Chinese Drama (Mandarin)</h2>
+    <div class="movie-carousel" id="chinese-carousel"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <h3>Footer</h3>
+    <p>Additional Links or Info</p>
+  </footer>
+
+  <!-- Search Overlay -->
+  <div id="searchOverlay">
+    <button class="search-close-btn" id="searchCloseBtn">Close</button>
+    <div class="search-input-container">
+      <input type="text" id="searchInput" placeholder="Type movie name..." />
+      <button id="searchGoBtn">Search</button>
+    </div>
+    <div id="searchResults"></div>
+  </div>
+
+  <!-- Main JS -->
+  <script src="js/main.js"></script>
+</body>
+</html>
