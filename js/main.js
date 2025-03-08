@@ -2,7 +2,7 @@ const apiKey = 'af1f708691a1a8fa6862a85e2cc240ea';
 const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
 const fallbackImage = 'https://via.placeholder.com/500x750?text=No+Image';
 
-/* Helper to handle image loading errors */
+/* Helper: handle image loading errors (retry once, then fallback) */
 function handleImageError(imgEl, originalSrc) {
   if (!imgEl.dataset.retry) {
     imgEl.dataset.retry = 'true';
@@ -29,12 +29,19 @@ async function loadTopSlideshow() {
     topSlides.forEach(movie => {
       const slide = document.createElement('div');
       slide.className = 'slide';
+
+      // Make slideshow clickable
+      slide.addEventListener('click', () => {
+        window.location.href = `movie.html?id=${movie.id}`;
+      });
+
       const img = document.createElement('img');
       let src = movie.backdrop_path
         ? (imageBaseUrl + movie.backdrop_path)
         : (movie.poster_path ? (imageBaseUrl + movie.poster_path) : fallbackImage);
       img.src = src;
       img.onerror = () => handleImageError(img, src);
+
       slide.appendChild(img);
       slidesContainer.appendChild(slide);
     });
@@ -70,7 +77,7 @@ function updateTopMovieTitle(index) {
   topMovieTitleEl.textContent = movie ? (movie.title || 'No Title') : '';
 }
 
-/* ========== CATEGORIES (WITH CLICK TO DETAILS) ========== */
+/* ========== ENDLESS CATEGORIES (WITH LOAD MORE TILE) ========== */
 const categoryPages = {
   recommended: 1,
   action: 1,
@@ -84,9 +91,19 @@ const categoryPages = {
   chinese: 1,
 };
 
+/**
+ * Load one page of movies for a category, then add a "Load More" tile.
+ */
 async function loadCategory(pageKey, url, containerId) {
+  const container = document.getElementById(containerId);
+
+  // Remove old load-more tile if present
+  const oldTile = container.querySelector('.load-more-tile');
+  if (oldTile) {
+    container.removeChild(oldTile);
+  }
+
   try {
-    const container = document.getElementById(containerId);
     const fetchUrl = `${url}&page=${categoryPages[pageKey]}`;
     const response = await fetch(fetchUrl);
     const data = await response.json();
@@ -96,7 +113,7 @@ async function loadCategory(pageKey, url, containerId) {
       const item = document.createElement('div');
       item.className = 'movie-item';
 
-      // On click => go to movie.html?id=MOVIE_ID
+      // Clicking the poster => go to details
       item.addEventListener('click', () => {
         window.location.href = `movie.html?id=${movie.id}`;
       });
@@ -108,18 +125,38 @@ async function loadCategory(pageKey, url, containerId) {
       img.src = src;
       img.onerror = () => handleImageError(img, src);
       img.alt = movie.title || 'Movie Poster';
-      item.appendChild(img);
 
+      item.appendChild(img);
       container.appendChild(item);
     });
 
-    // Next page next time
+    // Increment page for next time
     categoryPages[pageKey]++;
+
+    // Append new load-more tile
+    const loadMoreTile = document.createElement('div');
+    loadMoreTile.className = 'movie-item load-more-tile';
+    loadMoreTile.style.display = 'flex';
+    loadMoreTile.style.alignItems = 'center';
+    loadMoreTile.style.justifyContent = 'center';
+    loadMoreTile.style.backgroundColor = '#444';
+    loadMoreTile.style.cursor = 'pointer';
+    loadMoreTile.style.fontSize = '1.2rem';
+    loadMoreTile.style.color = '#fff';
+    loadMoreTile.style.fontWeight = 'bold';
+    loadMoreTile.textContent = '+'; // Or "See More"
+    loadMoreTile.addEventListener('click', () => {
+      loadCategory(pageKey, url, containerId);
+    });
+
+    container.appendChild(loadMoreTile);
+
   } catch (error) {
     console.error(`Error loading category for ${pageKey}:`, error);
   }
 }
 
+/* Initialize each category (first load) */
 function initRecommended() {
   const url = `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}`;
   loadCategory('recommended', url, 'recommended-carousel');
@@ -169,7 +206,6 @@ const searchInput = document.getElementById('searchInput');
 const searchGoBtn = document.getElementById('searchGoBtn');
 const searchResults = document.getElementById('searchResults');
 
-// Show overlay & load trending movies initially
 async function openSearchOverlay() {
   searchOverlay.style.display = 'flex';
   searchInput.value = '';
@@ -177,7 +213,6 @@ async function openSearchOverlay() {
   await loadTrendingInSearch();
 }
 
-// Hide overlay
 function closeSearchOverlay() {
   searchOverlay.style.display = 'none';
 }
@@ -187,21 +222,18 @@ async function loadTrendingInSearch() {
   try {
     const res = await fetch(url);
     const data = await res.json();
-    const results = data.results || [];
-    renderSearchResults(results);
+    renderSearchResults(data.results || []);
   } catch (error) {
     console.error('Error loading trending for search:', error);
   }
 }
 
-// Perform a search
 async function searchMovies(query) {
   const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}`;
   try {
     const res = await fetch(url);
     const data = await res.json();
-    const results = data.results || [];
-    renderSearchResults(results);
+    renderSearchResults(data.results || []);
   } catch (error) {
     console.error('Error searching movies:', error);
   }
@@ -218,8 +250,6 @@ function renderSearchResults(results) {
   results.forEach(movie => {
     const div = document.createElement('div');
     div.className = 'search-item';
-
-    // On click => go to movie.html?id=MOVIE_ID
     div.addEventListener('click', () => {
       window.location.href = `movie.html?id=${movie.id}`;
     });
@@ -241,12 +271,12 @@ function renderSearchResults(results) {
   });
 }
 
-// Initialize
+// Init
 document.addEventListener('DOMContentLoaded', () => {
-  // Top Slideshow
+  // Slideshow
   loadTopSlideshow();
 
-  // Categories
+  // Categories (first load)
   initRecommended();
   initAction();
   initNew();
@@ -258,11 +288,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initKdrama();
   initChinese();
 
-  // Search overlay open/close
+  // Search overlay
   searchIcon.addEventListener('click', openSearchOverlay);
   searchCloseBtn.addEventListener('click', closeSearchOverlay);
 
-  // On "Search" button
   searchGoBtn.addEventListener('click', () => {
     const query = searchInput.value.trim();
     if (query) {
@@ -272,7 +301,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // On pressing Enter
   searchInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
