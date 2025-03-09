@@ -9,23 +9,31 @@
   <header>
     <div class="header-content">
       <div class="header-title">Movie Hub</div>
-      <!-- Optional: a back/home link -->
     </div>
   </header>
 
-  <main class="details-container">
+  <div class="banner">
+    <img id="bannerImage" src="https://via.placeholder.com/1200x400?text=Movie+Banner" alt="Banner">
+    <div class="banner-info">
+      <h1 id="bannerTitle">Loading Title...</h1>
+      <p id="bannerOverview">Movie info loading...</p>
+    </div>
+  </div>
+
+  <section class="section details-container">
     <div class="poster-section">
       <img id="moviePoster" src="" alt="Movie Poster">
     </div>
     <div class="info-section">
       <h2 id="movieTitle">Loading...</h2>
-      <p id="movieOverview"></p>
+      <p><strong>Overview:</strong> <span id="movieOverview"></span></p>
       <p><strong>Release Date:</strong> <span id="movieReleaseDate"></span></p>
       <p><strong>Rating:</strong> <span id="movieRating"></span></p>
-
-      <!-- Phase 3: Download button or more info can go here -->
     </div>
-  </main>
+  </section>
+
+  <!-- Floating Download Button -->
+  <button id="downloadBtn" class="floating-download-btn">Download</button>
 
   <script src="js/details.js"></script>
 </body>
