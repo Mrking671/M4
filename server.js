@@ -13,7 +13,7 @@ const axios = require('axios');
 const { MongoClient, ObjectId } = require('mongodb');
 
 // 1) Telegram Bot Token - fill in your real token
-const BOT_TOKEN = '1234567890:YOUR_BOT_TOKEN_HERE';
+const BOT_TOKEN = '6495773759:AAEokBFhtpvXjlIvvpRJx9dlTeuAE7wzwlI';
 
 // 2) MongoDB connection
 const MONGO_URI = 'mongodb+srv://Selfmixbot:nehalsingh969797@cluster0.kb5xjos.mongodb.net/?retryWrites=true&w=majority';
